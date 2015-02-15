@@ -1,6 +1,7 @@
 package ch.games.roguepg.game;                                                                                                                                
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -36,6 +37,39 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
         
         rpg.batch.begin();
+        
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) 
+            | Gdx.input.isKeyPressed(Input.Keys.A)) {
+            player.x -= 200 * Gdx.graphics.getDeltaTime();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)
+            | Gdx.input.isKeyPressed(Input.Keys.D)) {
+            player.x += 200 * Gdx.graphics.getDeltaTime();
+        }   
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) 
+           | Gdx.input.isKeyPressed(Input.Keys.W)){
+            player.y += 200 * Gdx.graphics.getDeltaTime();
+        } 
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) 
+           | Gdx.input.isKeyPressed(Input.Keys.S)){
+            player.y -= 200 * Gdx.graphics.getDeltaTime();
+        }       if (Gdx.input.isKeyPressed(Input.Keys.LEFT) 
+            | Gdx.input.isKeyPressed(Input.Keys.A)) {
+            player.x -= 200 * Gdx.graphics.getDeltaTime();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)
+            | Gdx.input.isKeyPressed(Input.Keys.D)) {
+            player.x += 200 * Gdx.graphics.getDeltaTime();
+        }   
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) 
+           | Gdx.input.isKeyPressed(Input.Keys.W)){
+            player.y += 200 * Gdx.graphics.getDeltaTime();
+        } 
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) 
+           | Gdx.input.isKeyPressed(Input.Keys.S)){
+            player.y -= 200 * Gdx.graphics.getDeltaTime();
+        }
+
                 
         /* Make camera follow player */
         camera.position.set(player.x + 32, player.y + 32, 0); 
