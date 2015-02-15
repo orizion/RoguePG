@@ -76,6 +76,7 @@ public class GameScreen implements Screen {
         camera.update();
         
         rpg.batch.setProjectionMatrix(camera.combined);
+        rpg.batch.draw(rpg.bg, -512, -512, 1024, 1024, 0, 0, 10, 10);
         rpg.batch.draw(rpg.img, player.x , player.y);
 
         rpg.batch.end();
