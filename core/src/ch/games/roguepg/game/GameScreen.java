@@ -19,15 +19,16 @@ public class GameScreen implements Screen {
         
         rpg = game;
         
+        //create Placeholder for Player
         player = new Rectangle();
         player.height = 64;
         player.width = 64;
-        player.x = 0;
-        player.y = 0;
+        //Set Player in the Middle of the Screen
+        player.x = 512/2;
+        player.y = 512/2;
         
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 512, 512);
-
     }
 
     @Override
@@ -38,22 +39,8 @@ public class GameScreen implements Screen {
         
         rpg.batch.begin();
         
+        //Capture Input for movement
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) 
-            | Gdx.input.isKeyPressed(Input.Keys.A)) {
-            player.x -= 200 * Gdx.graphics.getDeltaTime();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)
-            | Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.x += 200 * Gdx.graphics.getDeltaTime();
-        }   
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) 
-           | Gdx.input.isKeyPressed(Input.Keys.W)){
-            player.y += 200 * Gdx.graphics.getDeltaTime();
-        } 
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) 
-           | Gdx.input.isKeyPressed(Input.Keys.S)){
-            player.y -= 200 * Gdx.graphics.getDeltaTime();
-        }       if (Gdx.input.isKeyPressed(Input.Keys.LEFT) 
             | Gdx.input.isKeyPressed(Input.Keys.A)) {
             player.x -= 200 * Gdx.graphics.getDeltaTime();
         }
@@ -72,12 +59,21 @@ public class GameScreen implements Screen {
 
                 
         /* Make camera follow player */
-        camera.position.set(player.x + 32, player.y + 32, 0); 
+        camera.position.set(player.x + player.height / 2, player.y + player.width / 2, 0); 
         camera.update();
         
         rpg.batch.setProjectionMatrix(camera.combined);
-        rpg.batch.draw(rpg.bg, -512, -512, 1024, 1024, 0, 0, 10, 10);
+
+        //Get Coordinates of the bottom left Corner of the Camera
+        float camCornerX = camera.position.x- 512/2;
+        float camCornerY = camera.position.y - 512/2;
+        
+        //Background, draw the Background in the visible area only
+        rpg.batch.draw(rpg.bg, camCornerX, camCornerY, 512, 512,0,0,2,2);
+        //User
         rpg.batch.draw(rpg.img, player.x , player.y);
+        //Use other Texture too show movement of player sprite, preferably change texture to distinguish from player
+        rpg.batch.draw(rpg.img, 100 , 100);
 
         rpg.batch.end();
 

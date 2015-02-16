@@ -11,7 +11,7 @@ public class RoguePG extends Game {
     @Override
     public void create () {
         batch = new SpriteBatch();
-        img = new Texture("placeholder.gif");
+        img = new Texture("player.gif");
         bg = new Texture("grass.png");
         bg.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         this.setScreen(new GameScreen(this));
