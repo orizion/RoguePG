@@ -46,5 +46,9 @@ public class Character extends Actor{
            | Gdx.input.isKeyPressed(Input.Keys.S)){
             this.setY(this.getY() - speed * Gdx.graphics.getDeltaTime());
         }
+        
+        /* Update bounding rectangles position */
+        this.bounds.setX(this.getX());
+        this.bounds.setY(this.getY());
     }  
 }
