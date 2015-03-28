@@ -1,7 +1,6 @@
 package ch.games.roguepg.tools;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -28,10 +27,12 @@ public class RogueMapRenderer implements MapRenderer{
 
     @Override
     public void render() {
-    
-        for (MapObject object : this.map.getLayers().get(0).getObjects()) {
-            /* For testing purposes. Later it will draw all tiles as laid out in tileIndices */
-            this.game.getBatch().draw((TextureRegion) object.getProperties().get("texture"), 0.0f, 0.0f, 64.0f, 64.0f);
+        for (int i=0; i < map.getMaxXIndex(); i++) {
+            for (int j = 0; j < map.getMaxYIndex(); j++) {
+            int tile = map.getTileEnum(i, j);
+                game.getBatch().draw((TextureRegion) map.getLayers().get(0).getObjects().get(tile).getProperties().get("texture"), map.indexToCoord(i), map.indexToCoord(j), 64.0f, 64.0f);
+                /*TODO: Consider opacity/visibility when drawing */
+            }
         }
     }
 

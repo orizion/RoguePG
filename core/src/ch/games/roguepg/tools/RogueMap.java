@@ -10,6 +10,7 @@ public class RogueMap extends Map {
     public final int TILE_SIZE;
     //Containing indices of Tile instances according to position in map
     private final int[][] tileIndices; 
+    private final int maxXIndex, maxYIndex;
     private final MapLayer tileLayer;
     private final MapLayer objectLayer;
     private final MapLayer actorLayer;
@@ -30,8 +31,10 @@ public class RogueMap extends Map {
     public RogueMap(final RoguePG game,final int tileSize, int mapXSize,int mapYSize) {
         this.game = game;
         this.TILE_SIZE = tileSize;
+        this.maxXIndex = mapXSize/TILE_SIZE;
+        this.maxYIndex = mapYSize/TILE_SIZE;
 
-        tileIndices = new int[mapXSize][mapYSize];
+        tileIndices = generateMap();
 
         tileLayer = new MapLayer();
         objectLayer = new MapLayer();
@@ -46,7 +49,7 @@ public class RogueMap extends Map {
         getLayers().get(0).getObjects().get("impassable").setOpacity(0.1f); /* These will be invisible */
         grassTile = new Tile(Tile.TileType.GRASS, this.game.getGrass(), "grass");
         getLayers().get(0).getObjects().add(grassTile);
-        /* Repeat for all tile types. Add function to simplify? */        
+        /* TODO: Repeat for all tile types. Add function to simplify? */        
     }
     
     public float indexToCoord(int index) {
@@ -60,8 +63,23 @@ public class RogueMap extends Map {
     public Tile getTileAt(float x, float y) {
         return (Tile) this.getLayers().get(0).getObjects().get(tileIndices[coordToIndex(x)][coordToIndex(y)]);
     }
+    
+    public int getTileEnum(int x, int y) {
+        return tileIndices[x][y];
+    }
+    
+   public int getMaxXIndex() {
+        return maxXIndex;
+    }
 
-    public void generateMap() {
-        //set the tile types here 
+    public int getMaxYIndex() {
+        return maxYIndex;
+    }
+
+    public int[][] generateMap() {
+        int[][] tileIndices = new int[maxXIndex][maxYIndex];
+        /* All array elements are initially zero, which equates to the impassable 
+        tile. Generate the map by setting zeroes to other tile numbers. */        
+        return tileIndices;
     }	
 }
