@@ -13,10 +13,11 @@ import com.badlogic.gdx.maps.MapObject;
 public class Tile extends MapObject{
 
     public static enum TileType {
-            GRASS,
-            DIRT,
-            STONE,
-            WATER,
+        IMPASSABLE,
+        GRASS,
+        DIRT,
+        STONE,
+        WATER,
     }
     
     public Tile(TileType type,TextureRegion texture) {

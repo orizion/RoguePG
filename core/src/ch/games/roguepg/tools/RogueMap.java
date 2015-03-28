@@ -1,19 +1,20 @@
 package ch.games.roguepg.tools;
 
-import ch.games.roguepg.game.RoguePG;
 import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapLayer;
+
+import ch.games.roguepg.game.RoguePG;
 
 public class RogueMap extends Map {
     private final RoguePG game;
     public final int TILE_SIZE;
     //Containing indices of Tile instances according to position in map
-    private final int[][] tileIndeces; 
+    private final int[][] tileIndices; 
     private final MapLayer tileLayer;
     private final MapLayer objectLayer;
     private final MapLayer actorLayer;
     
-    private final Tile grassTile;
+    private final Tile impassableTile, grassTile;
     /* To be added:
     private final Tile dirtTile;
     private final Tile stoneTile;
@@ -30,7 +31,7 @@ public class RogueMap extends Map {
         this.game = game;
         this.TILE_SIZE = tileSize;
 
-        tileIndeces = new int[mapXSize][mapYSize];
+        tileIndices = new int[mapXSize][mapYSize];
 
         tileLayer = new MapLayer();
         objectLayer = new MapLayer();
@@ -39,7 +40,10 @@ public class RogueMap extends Map {
         getLayers().add(tileLayer); 
         getLayers().add(objectLayer); 
         getLayers().add(actorLayer); 
-
+        
+        impassableTile = new Tile(Tile.TileType.IMPASSABLE, this.game.getImpassable(), "impassable");
+        getLayers().get(0).getObjects().add(impassableTile);
+        getLayers().get(0).getObjects().get("impassable").setOpacity(0.1f); /* These will be invisible */
         grassTile = new Tile(Tile.TileType.GRASS, this.game.getGrass(), "grass");
         getLayers().get(0).getObjects().add(grassTile);
         /* Repeat for all tile types. Add function to simplify? */        
@@ -54,7 +58,7 @@ public class RogueMap extends Map {
     }
     
     public Tile getTileAt(float x, float y) {
-        return (Tile) this.getLayers().get(0).getObjects().get(tileIndeces[coordToIndex(x)][coordToIndex(y)]);
+        return (Tile) this.getLayers().get(0).getObjects().get(tileIndices[coordToIndex(x)][coordToIndex(y)]);
     }
 
     public void generateMap() {
