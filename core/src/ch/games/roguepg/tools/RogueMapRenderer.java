@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import ch.games.roguepg.game.RoguePG;
+import com.badlogic.gdx.maps.MapObject;
 
 
 public class RogueMapRenderer implements MapRenderer{
@@ -27,11 +28,21 @@ public class RogueMapRenderer implements MapRenderer{
 
     @Override
     public void render() {
-        for (int i=0; i < map.getMaxXIndex(); i++) {
-            for (int j = 0; j < map.getMaxYIndex(); j++) {
-            int tile = map.getTileEnum(i, j);
-                game.getBatch().draw((TextureRegion) map.getLayers().get(0).getObjects().get(tile).getProperties().get("texture"), map.indexToCoord(i), map.indexToCoord(j), 64.0f, 64.0f);
-                /*TODO: Consider opacity/visibility when drawing */
+        for (int i=0; i < map.getTileIndices().length; i++) {
+            for (int j = 0; j < map.getTileIndices()[0].length; j++) {
+                /* Check all ints in tileIndeces, and print textures by comparing to TileType enum. */
+                int current = map.getTileIndices()[i][j];
+
+                for (MapObject tile : map.getLayers().get(0).getObjects()) {
+                    if (tile.getProperties().get("type", Tile.TileType.class).ordinal() == current) {
+                        game.getBatch().draw(
+                            (TextureRegion) tile.getProperties().get("texture"),
+                            map.indexToCoord(i), 
+                            map.indexToCoord(j), 
+                            64.0f, 64.0f
+                        );
+                    }
+                }
             }
         }
     }

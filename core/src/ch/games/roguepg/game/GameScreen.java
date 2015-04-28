@@ -24,14 +24,14 @@ public class GameScreen implements Screen {
     public GameScreen(final RoguePG game) {
         
         roguePG = game;
-        
-        player = new Character(512/2, 512/2);
-        
+                
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 512, 512);
         
-        rogueMap = new RogueMap(roguePG, 64, 512, 512);
-        
+        rogueMap = new RogueMap(roguePG, 64, 16, 16);
+        /* Set player at center of map */
+        player = new Character(rogueMap.indexToCoord(rogueMap.getTileIndices().length)/2, rogueMap.indexToCoord(rogueMap.getTileIndices()[0].length)/2);
+
         renderer = new RogueMapRenderer(rogueMap, roguePG);
         renderer.setView(camera);
         

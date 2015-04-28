@@ -8,14 +8,13 @@ import ch.games.roguepg.game.RoguePG;
 public class RogueMap extends Map {
     private final RoguePG game;
     public final int TILE_SIZE;
-    //Containing indices of Tile instances according to position in map
-    private final int[][] tileIndices; 
-    private final int maxXIndex, maxYIndex;
+    /* Contains indices of Tile instances according to position in map */
+    private int[][] tileIndices; 
     private final MapLayer tileLayer;
     private final MapLayer objectLayer;
     private final MapLayer actorLayer;
     
-    private final Tile impassableTile, grassTile;
+    private final Tile dirtTile, grassTile;
     /* To be added:
     private final Tile dirtTile;
     private final Tile stoneTile;
@@ -31,10 +30,7 @@ public class RogueMap extends Map {
     public RogueMap(final RoguePG game,final int tileSize, int mapXSize,int mapYSize) {
         this.game = game;
         this.TILE_SIZE = tileSize;
-        this.maxXIndex = mapXSize/TILE_SIZE;
-        this.maxYIndex = mapYSize/TILE_SIZE;
 
-        tileIndices = generateMap();
 
         tileLayer = new MapLayer();
         objectLayer = new MapLayer();
@@ -43,13 +39,10 @@ public class RogueMap extends Map {
         getLayers().add(tileLayer); 
         getLayers().add(objectLayer); 
         getLayers().add(actorLayer); 
-        
-        impassableTile = new Tile(Tile.TileType.IMPASSABLE, this.game.getImpassable(), "impassable");
-        getLayers().get(0).getObjects().add(impassableTile);
-        getLayers().get(0).getObjects().get("impassable").setOpacity(0.1f); /* These will be invisible */
-        grassTile = new Tile(Tile.TileType.GRASS, this.game.getGrass(), "grass");
-        getLayers().get(0).getObjects().add(grassTile);
-        /* TODO: Repeat for all tile types. Add function to simplify? */        
+        dirtTile = new Tile(Tile.TileType.DIRT, this.game.getImpassable(), "DIRT", this);
+        grassTile = new Tile(Tile.TileType.GRASS, this.game.getGrass(), "GRASS", this);
+        generateMap(mapXSize, mapYSize);
+
     }
     
     public float indexToCoord(int index) {
@@ -64,22 +57,16 @@ public class RogueMap extends Map {
         return (Tile) this.getLayers().get(0).getObjects().get(tileIndices[coordToIndex(x)][coordToIndex(y)]);
     }
     
-    public int getTileEnum(int x, int y) {
-        return tileIndices[x][y];
+    public int[][] getTileIndices() {
+        return tileIndices;
     }
     
-   public int getMaxXIndex() {
-        return maxXIndex;
-    }
 
-    public int getMaxYIndex() {
-        return maxYIndex;
-    }
-
-    public int[][] generateMap() {
-        int[][] tileIndices = new int[maxXIndex][maxYIndex];
-        /* All array elements are initially zero, which equates to the impassable 
-        tile. Generate the map by setting zeroes to other tile numbers. */        
-        return tileIndices;
+    public void generateMap(int mapXSize,int mapYSize) {
+        tileIndices = new int[mapXSize][mapYSize];
+        /* All array elements are initially zero, which equates to the standard tile grass.
+           Generate the map by setting zeroes to other tile numbers. */
+        
+       tileIndices[0][0] = 1;
     }	
 }
