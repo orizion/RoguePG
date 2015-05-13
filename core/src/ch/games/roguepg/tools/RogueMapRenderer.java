@@ -11,11 +11,9 @@ import com.badlogic.gdx.maps.MapObject;
 
 public class RogueMapRenderer implements MapRenderer{
     private final RogueMap map;
-    private final RoguePG game;
     
-    public RogueMapRenderer(RogueMap map, RoguePG game){
+    public RogueMapRenderer(RogueMap map){
         this.map = map;
-        this.game = game;
     }
     
     @Override
@@ -35,7 +33,7 @@ public class RogueMapRenderer implements MapRenderer{
 
                 for (MapObject tile : map.getLayers().get(0).getObjects()) {
                     if (tile.getProperties().get("type", Tile.TileType.class).ordinal() == current) {
-                        game.getBatch().draw(
+                        RoguePG.batch.draw(
                             (TextureRegion) tile.getProperties().get("texture"),
                             RogueMap.indexToCoord(i), 
                             RogueMap.indexToCoord(j), 

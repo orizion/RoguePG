@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class RogueMap extends Map {
-    private final RoguePG game;
     public static int TILE_SIZE;
     /* Contains indices of Tile instances according to position in map */
     public static int[][] tileIndices; 
@@ -24,15 +23,12 @@ public class RogueMap extends Map {
     */
     
     /**
-     * @param game
      * @param tileSize
      * @param mapXSize
      * @param mapYSize 
      */
-    public RogueMap(final RoguePG game,final int tileSize, int mapXSize,int mapYSize) {
-        this.game = game;
-        this.TILE_SIZE = tileSize;
-
+    public RogueMap(final int tileSize, int mapXSize,int mapYSize) {
+        TILE_SIZE = tileSize;
 
         tileLayer = new MapLayer();
         objectLayer = new MapLayer();
@@ -41,10 +37,9 @@ public class RogueMap extends Map {
         getLayers().add(tileLayer); 
         getLayers().add(objectLayer); 
         getLayers().add(actorLayer); 
-        dirtTile = new Tile(Tile.TileType.DIRT, this.game.getImpassable(), "DIRT", this);
-        grassTile = new Tile(Tile.TileType.GRASS, this.game.getGrass(), "GRASS", this);
+        dirtTile = new Tile(Tile.TileType.DIRT, RoguePG.dirt, "DIRT", this);
+        grassTile = new Tile(Tile.TileType.GRASS, RoguePG.grass, "GRASS", this);
         generateMap(mapXSize, mapYSize);
-
     }
     
     public static float indexToCoord(int index) {
