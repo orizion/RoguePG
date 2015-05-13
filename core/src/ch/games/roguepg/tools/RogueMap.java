@@ -68,7 +68,7 @@ public class RogueMap extends Map {
             }
 
             /* Check if this room would overlap another room and skip this iteration if so. */                                
-            //should also check for directly adjacent, but zhis would cause overflow. Exception?
+            //should also check for directly adjacent, but this would cause overflow. Exception?
             for(int i = 0; i < room.getWidth(); i++){
                 for(int j = 0; j < room.getHeight(); j++){
                     if(tileIndices[room.getX()+i][room.getY()+j] != 0){
@@ -86,14 +86,16 @@ public class RogueMap extends Map {
             roomArray.add(room);
         }
         /*Connections*/
-        for(int i = 0; i<20; i++){
-            int startRoom = random.nextInt(roomArray.size()-1 - 0) + 0;
-            int endRoom = random.nextInt(roomArray.size()-1 - 0) + 0;
-            int startX = random.nextInt(roomArray.get(startRoom).getX()+roomArray.get(startRoom).getWidth());
-            int startY = random.nextInt(roomArray.get(startRoom).getY()+roomArray.get(startRoom).getHeight());
-            int endX = random.nextInt(roomArray.get(endRoom).getX()+roomArray.get(endRoom).getWidth());
-            int endY = random.nextInt(roomArray.get(endRoom).getY()+roomArray.get(endRoom).getHeight());
-            /* Randomly choose between x and y axis, 50:50 chance */
+        
+        for(int i = 0; i<10; i++){
+            //from + rndGenerator.nextInt(to - from + 1)
+            int startRoom = 0 + random.nextInt((roomArray.size()-1) - 0);
+            int endRoom = 0 + random.nextInt((roomArray.size()-1) - 0);
+            int startX = roomArray.get(startRoom).getX() + random.nextInt((roomArray.get(startRoom).getX()+roomArray.get(startRoom).getWidth())-roomArray.get(startRoom).getX()+1);
+            int startY = roomArray.get(startRoom).getY() + random.nextInt((roomArray.get(startRoom).getY()+roomArray.get(startRoom).getHeight())-roomArray.get(startRoom).getY()+1);
+            int endX = roomArray.get(endRoom).getX() + random.nextInt((roomArray.get(endRoom).getX()+roomArray.get(endRoom).getWidth())-roomArray.get(endRoom).getX()+1);
+            int endY = roomArray.get(endRoom).getY() + random.nextInt((roomArray.get(endRoom).getY()+roomArray.get(endRoom).getHeight())-roomArray.get(endRoom).getY()+1);
+            // Randomly choose between x and y axis, 50:50 chance
             boolean moveInX = (random.nextDouble() >= 0.5f);
 
             while(true){
