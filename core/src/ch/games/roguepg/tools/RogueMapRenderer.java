@@ -28,17 +28,17 @@ public class RogueMapRenderer implements MapRenderer{
 
     @Override
     public void render() {
-        for (int i=0; i < map.getTileIndices().length; i++) {
-            for (int j = 0; j < map.getTileIndices()[0].length; j++) {
+        for (int i=0; i < RogueMap.tileIndices.length; i++) {
+            for (int j = 0; j < RogueMap.tileIndices[0].length; j++) {
                 /* Check all ints in tileIndeces, and print textures by comparing to TileType enum. */
-                int current = map.getTileIndices()[i][j];
+                int current = RogueMap.tileIndices[i][j];
 
                 for (MapObject tile : map.getLayers().get(0).getObjects()) {
                     if (tile.getProperties().get("type", Tile.TileType.class).ordinal() == current) {
                         game.getBatch().draw(
                             (TextureRegion) tile.getProperties().get("texture"),
-                            map.indexToCoord(i), 
-                            map.indexToCoord(j), 
+                            RogueMap.indexToCoord(i), 
+                            RogueMap.indexToCoord(j), 
                             64.0f, 64.0f
                         );
                     }

@@ -9,9 +9,9 @@ import java.util.Random;
 
 public class RogueMap extends Map {
     private final RoguePG game;
-    public final int TILE_SIZE;
+    public static int TILE_SIZE;
     /* Contains indices of Tile instances according to position in map */
-    private final int[][] tileIndices; 
+    public static int[][] tileIndices; 
     private final MapLayer tileLayer;
     private final MapLayer objectLayer;
     private final MapLayer actorLayer;
@@ -43,31 +43,22 @@ public class RogueMap extends Map {
         getLayers().add(actorLayer); 
         dirtTile = new Tile(Tile.TileType.DIRT, this.game.getImpassable(), "DIRT", this);
         grassTile = new Tile(Tile.TileType.GRASS, this.game.getGrass(), "GRASS", this);
-        tileIndices = generateMap(mapXSize, mapYSize);
+        generateMap(mapXSize, mapYSize);
 
     }
     
-    public float indexToCoord(int index) {
+    public static float indexToCoord(int index) {
             return index*TILE_SIZE;
     }
     
-    public int coordToIndex(float coord) {
+    public static  int coordToIndex(float coord) {
             return (int) (coord / TILE_SIZE);
     }
-    
-    public Tile getTileAt(float x, float y) {
-        return (Tile) this.getLayers().get(0).getObjects().get(tileIndices[coordToIndex(x)][coordToIndex(y)]);
-    }
-    
-    public int[][] getTileIndices() {
-        return tileIndices;
-    }
-    
 
-    public int[][] generateMap(int mapXSize,int mapYSize) {
+    public void generateMap(int mapXSize,int mapYSize) {
          /* All array elements are initially zero, which equates to the standard tile(dirt).
         Generate the map by setting zeroes to other tile numbers. */
-        int[][] tileIndices = new int[mapXSize][mapYSize];
+        tileIndices = new int[mapXSize][mapYSize];
         ArrayList<Room> roomArray = new ArrayList<Room>();
         Random random = new Random();
 
@@ -100,33 +91,30 @@ public class RogueMap extends Map {
             roomArray.add(room);
         }
         /*Connections*/
-        for(int i = 0; i<10; i++){
-        int startRoom = random.nextInt(roomArray.size()-1 - 0) + 0;
-        int endRoom = random.nextInt(roomArray.size()-1 - 0) + 0;
-        int startX = random.nextInt(roomArray.get(startRoom).getX()+roomArray.get(startRoom).getWidth());
-        int startY = random.nextInt(roomArray.get(startRoom).getY()+roomArray.get(startRoom).getHeight());
-        int endX = random.nextInt(roomArray.get(endRoom).getX()+roomArray.get(endRoom).getWidth());
-        int endY = random.nextInt(roomArray.get(endRoom).getY()+roomArray.get(endRoom).getHeight());
-        /* Randomly choose between x and y axis, 50:50 chance */
-        boolean moveInX = (random.nextDouble() >= 0.5f);
+        for(int i = 0; i<20; i++){
+            int startRoom = random.nextInt(roomArray.size()-1 - 0) + 0;
+            int endRoom = random.nextInt(roomArray.size()-1 - 0) + 0;
+            int startX = random.nextInt(roomArray.get(startRoom).getX()+roomArray.get(startRoom).getWidth());
+            int startY = random.nextInt(roomArray.get(startRoom).getY()+roomArray.get(startRoom).getHeight());
+            int endX = random.nextInt(roomArray.get(endRoom).getX()+roomArray.get(endRoom).getWidth());
+            int endY = random.nextInt(roomArray.get(endRoom).getY()+roomArray.get(endRoom).getHeight());
+            /* Randomly choose between x and y axis, 50:50 chance */
+            boolean moveInX = (random.nextDouble() >= 0.5f);
 
-        while(true){
-            tileIndices[startX][startY] = 1;
-            if(startX == endX && startY == endY){
-                break;
+            while(true){
+                tileIndices[startX][startY] = 1;
+                if(startX == endX && startY == endY){
+                    break;
+                }
+                if(moveInX){
+                    if (startX < endX) startX++;
+                    else if (startX > endX) startX--;
+                }else{
+                    if (startY < endY) startY++;
+                    else if (startY > endY) startY--;
+                   }
+                if(random.nextDouble()<0.1f){moveInX = !moveInX;}
             }
-            if(moveInX){
-                if (startX < endX) startX++;
-                else if (startX > endX) startX--;
-            } else {
-                if (startY < endY) startY++;
-                else if (startY > endY) startY--;
-               }
-            if(random.nextDouble()<0.1f){moveInX = !moveInX; }
-             }
         }
-        return tileIndices;
-
-
     }	
 }

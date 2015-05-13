@@ -1,54 +1,49 @@
-package ch.games.roguepg.game;
+package ch.games.roguepg.game;                                                                                                             
 
+import ch.games.roguepg.tools.RogueMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Character extends Actor{
-    Texture sprite;
-    Rectangle bounds;
-    int speed;
-
-    public Character(float x, float y){
-        sprite = new Texture("player.gif");
-        this.setBounds(x, y, 64, 64);
-        bounds = new Rectangle();
-        bounds.x = this.getX();
-        bounds.y = this.getY();
-        bounds.width = this.getWidth();
-        bounds.height = this.getHeight();
-        
-        speed = 200;
+    private final Texture sprite;
+    private final int speed;
+    public Character(){
+        sprite =  new Texture("player.gif");
+        setBounds(RogueMap.tileIndices.length*64/2, RogueMap.tileIndices[0].length*64/2, sprite.getWidth(), sprite.getHeight());    
+        speed = 500;
     }
-    
-    public Texture getSprite() {
-        return sprite;
+
+    @Override
+    public void draw (Batch batch, float parentAlpha) {
+        batch.draw(sprite, getX(), getY());
+    }
+
+    @Override
+    protected void positionChanged(){
     }
 
     @Override
     public void act(float delta) {
         /* Capture Input for movement */
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) 
+        //TODO: convert to actions
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)
             | Gdx.input.isKeyPressed(Input.Keys.A)) {
             this.setX(this.getX() - speed * Gdx.graphics.getDeltaTime());
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)
             | Gdx.input.isKeyPressed(Input.Keys.D)) {
             this.setX(this.getX() + speed * Gdx.graphics.getDeltaTime());
-        }   
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) 
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)
            | Gdx.input.isKeyPressed(Input.Keys.W)){
             this.setY(this.getY() + speed * Gdx.graphics.getDeltaTime());
-        } 
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) 
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)
            | Gdx.input.isKeyPressed(Input.Keys.S)){
             this.setY(this.getY() - speed * Gdx.graphics.getDeltaTime());
         }
-        
-        /* Update bounding rectangles position */
-        this.bounds.setX(this.getX());
-        this.bounds.setY(this.getY());
-    }  
+    }
 }
