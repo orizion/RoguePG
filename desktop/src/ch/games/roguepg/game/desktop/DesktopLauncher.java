@@ -7,7 +7,7 @@ import ch.games.roguepg.game.RoguePG;
 public class DesktopLauncher {
     public static void main (String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = "Rogue   PG";
+        config.title = "RoguePG";
         config.width= 1920; 
         config.height = 1080; 
         new LwjglApplication(new RoguePG(), config);
