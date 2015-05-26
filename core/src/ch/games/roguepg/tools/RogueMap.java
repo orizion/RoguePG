@@ -55,7 +55,7 @@ public class RogueMap extends Actor {
              * Check if this room would trigger an out of bounds exception. If so, skip this
              * iteration.
              */
-            if (room.getX() + room.getWidth() > mapXSize | room.getY() + room.getHeight() > mapYSize) {
+            if (room.getX() + room.getWidth() > mapXSize-1 | room.getY() + room.getHeight() > mapYSize-1) {
                 continue;
             }
 
