@@ -1,40 +1,21 @@
 package ch.games.roguepg.tools;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import java.util.ArrayList;
 import java.util.Random;
 
-import ch.games.roguepg.game.RoguePG;
+public class RogueMap extends Actor {
 
-import com.badlogic.gdx.maps.Map;
-import com.badlogic.gdx.maps.MapLayer;
-
-public class RogueMap extends Map {
-    public static int TILE_SIZE;
+    TextureAtlas atlas;
+    public static float TILE_SIZE;
     /* Contains indices of Tile instances according to position in map */
     public static int[][] tileIndices;
-    private final MapLayer tileLayer;
-    private final MapLayer objectLayer;
-    private final MapLayer actorLayer;
 
-    private final Tile dirtTile, grassTile;
-
-    /**
-     * @param tileSize
-     * @param mapXSize
-     * @param mapYSize
-     */
-    public RogueMap(final int tileSize, int mapXSize, int mapYSize) {
+    public RogueMap(float tileSize, int mapXSize, int mapYSize) {
+        atlas = new TextureAtlas("tiles.atlas");
         TILE_SIZE = tileSize;
-
-        tileLayer = new MapLayer();
-        objectLayer = new MapLayer();
-        actorLayer = new MapLayer();
-
-        getLayers().add(tileLayer);
-        getLayers().add(objectLayer);
-        getLayers().add(actorLayer);
-        dirtTile = new Tile(Tile.TileType.DIRT, RoguePG.dirt, "DIRT", this);
-        grassTile = new Tile(Tile.TileType.GRASS, RoguePG.grass, "GRASS", this);
         generateMap(mapXSize, mapYSize);
     }
 
@@ -44,6 +25,16 @@ public class RogueMap extends Map {
 
     public static int coordToIndex(float coord) {
         return (int) (coord / TILE_SIZE);
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        for (int i = 0; i < RogueMap.tileIndices.length; i++) {
+            for (int j = 0; j < RogueMap.tileIndices[0].length; j++) {
+                int current = RogueMap.tileIndices[i][j];
+                batch.draw(atlas.getRegions().get(current), indexToCoord(i), indexToCoord(j), TILE_SIZE, TILE_SIZE);
+            }
+        }
     }
 
     public void generateMap(int mapXSize, int mapYSize) {
@@ -56,7 +47,8 @@ public class RogueMap extends Map {
         Random random = new Random();
 
         /* Rooms */
-        OUTER: for (int tries = 100; tries > 0; tries--) {
+        OUTER:
+        for (int tries = 100; tries > 0; tries--) {
             Room room = new Room(mapXSize, mapYSize);
 
             /*
@@ -104,15 +96,17 @@ public class RogueMap extends Map {
                     break;
                 }
                 if (moveInX) {
-                    if (startX < endX)
+                    if (startX < endX) {
                         startX++;
-                    else if (startX > endX)
+                    } else if (startX > endX) {
                         startX--;
+                    }
                 } else {
-                    if (startY < endY)
+                    if (startY < endY) {
                         startY++;
-                    else if (startY > endY)
+                    } else if (startY > endY) {
                         startY--;
+                    }
                 }
                 if (random.nextDouble() < 0.1f) {
                     moveInX = !moveInX;
