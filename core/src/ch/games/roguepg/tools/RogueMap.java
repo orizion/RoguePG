@@ -3,32 +3,36 @@ package ch.games.roguepg.tools;
 import ch.games.roguepg.game.RoguePG;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class RogueMap extends Actor {
     /* Contains indices of Tile instances according to position in map */
+
     public static int[][] tileIndices;
-    TextureAtlas atlas;
+    private final TextureAtlas atlas;
+    private final ArrayList<Body> bodies;
 
     public RogueMap(int mapXSize, int mapYSize) {
         atlas = new TextureAtlas("tiles.atlas");
         generateMap(mapXSize, mapYSize);
+        bodies = new ArrayList<Body>();
+        generateMapBodies();
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        for (int i = 0; i < RogueMap.tileIndices.length; i++) {
-            for (int j = 0; j < RogueMap.tileIndices[0].length; j++) {
-                int current = RogueMap.tileIndices[i][j];
-                batch.draw(atlas.getRegions().get(current),
-                    i*RoguePG.PPM,
-                    j*RoguePG.PPM,
-                    RoguePG.PPM,
-                    RoguePG.PPM
-                );
-            }
+        for (Body body : bodies) {
+            batch.draw(
+                atlas.getRegions().first(),
+                (body.getPosition().x - 0.5f) * RoguePG.PPM,
+                (body.getPosition().y - 0.5f) * RoguePG.PPM
+            );
         }
     }
 
@@ -50,7 +54,7 @@ public class RogueMap extends Actor {
              * Check if this room would touch or go over the map boundaries.
              * If so, skip this iteration.
              */
-            if (room.getX() + room.getWidth() > mapXSize-2 | room.getY() + room.getHeight() > mapYSize-2 | room.getX() == 0 | room.getY()== 0) {
+            if (room.getX() + room.getWidth() > mapXSize - 2 | room.getY() + room.getHeight() > mapYSize - 2 | room.getX() == 0 | room.getY() == 0) {
                 continue;
             }
 
@@ -105,6 +109,26 @@ public class RogueMap extends Actor {
                 }
                 if (random.nextDouble() < 0.1f) {
                     moveInX = !moveInX;
+                }
+            }
+        }
+    }
+
+    private void generateMapBodies() {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox((0.5f), (0.5f));
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+
+        for (int i = 0; i < RogueMap.tileIndices.length; i++) {
+            for (int j = 0; j < RogueMap.tileIndices[0].length; j++) {
+                if (tileIndices[i][j] == 0) {
+                    bodyDef.position.set(i + 0.5f, j + 0.5f);
+                    Body body = RoguePG.world.createBody(bodyDef);
+                    body.createFixture(fixtureDef);
+                    bodies.add(body);
                 }
             }
         }
