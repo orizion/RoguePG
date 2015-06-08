@@ -9,6 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class RoguePG extends Game {
+    public static final String TITLE = "RoguePG";
+    public static final int V_WIDTH = 1920;
+    public static final int V_HEIGHT = 1080;
+    public static final float PPM = 64;
+    
     private RogueMap rogueMap;
     private Character player;
     private SpriteBatch batch;
@@ -17,7 +22,7 @@ public class RoguePG extends Game {
 
     @Override
     public void create() {
-        rogueMap = new RogueMap(64.0f, 64, 64);
+        rogueMap = new RogueMap(64, 64);
         player = new Character();
         batch = new SpriteBatch();
         batch.setProjectionMatrix(player.getCamera().combined);

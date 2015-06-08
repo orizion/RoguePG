@@ -18,25 +18,25 @@ public class Character extends Actor {
     public Character() {
         sprite = new Texture("player.gif");
         setBounds(
-                RogueMap.tileIndices.length * RogueMap.TILE_SIZE / 2, 
-                RogueMap.tileIndices[0].length * RogueMap.TILE_SIZE / 2,
+                RogueMap.tileIndices.length / 2, 
+                RogueMap.tileIndices[0].length / 2,
                 sprite.getWidth(), 
                 sprite.getHeight()
         );
         Random rnd = new Random();
-        while (RogueMap.tileIndices[RogueMap.coordToIndex(getX())][RogueMap.coordToIndex(getY())] == 0) {
+        while (RogueMap.tileIndices[(int) getX()][(int)getY()] == 0) {
             setPosition(
-                    rnd.nextFloat() * (RogueMap.tileIndices.length * RogueMap.TILE_SIZE), 
-                    rnd.nextFloat() * (RogueMap.tileIndices[0].length * RogueMap.TILE_SIZE)
+                    rnd.nextFloat() * (RogueMap.tileIndices.length), 
+                    rnd.nextFloat() * (RogueMap.tileIndices[0].length)
             );
         }
-        speed = 500;
+        speed = 50;
         camera = new OrthographicCamera(1920, 1080);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(sprite, getX(), getY());
+        batch.draw(sprite, getX() * RoguePG.PPM, getY() * RoguePG.PPM);
     }
 
     @Override
@@ -61,33 +61,9 @@ public class Character extends Actor {
                 | Gdx.input.isKeyPressed(Input.Keys.S)) {
             setY(getY() - speed * Gdx.graphics.getDeltaTime());
         }
-        if (isCollided()) {
-            setX(oldX);
-            setY(oldY);
-        }
-        /* Make camera follow player */
-        camera.position.set(getX() + getHeight() / 2, getY() + getWidth() / 2, 0);
-    }
 
-    public boolean isCollided() {
-        /* Check only positions around player for collision */
-        float x = getX();
-        float y = getY();
-        try {
-            if (RogueMap.tileIndices[RogueMap.coordToIndex(x + 20)][RogueMap.coordToIndex(y + 10)] == 0) {
-                return true;
-            } else if (RogueMap.tileIndices[RogueMap.coordToIndex(x + 40)][RogueMap.coordToIndex(y + 10)] == 0) {
-                return true;
-            } else if (RogueMap.tileIndices[RogueMap.coordToIndex(x + 20)][RogueMap.coordToIndex(y + 40)] == 0) {
-                return true;
-            } else if (RogueMap.tileIndices[RogueMap.coordToIndex(x + 40)][RogueMap.coordToIndex(y + 40)] == 0) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (IndexOutOfBoundsException e) {
-            return true;
-        }
+        /* Make camera follow player */
+        camera.position.set(getX() * RoguePG.PPM + getHeight() / 2, getY() * RoguePG.PPM + getWidth() / 2, 0);
     }
 
     OrthographicCamera getCamera() {

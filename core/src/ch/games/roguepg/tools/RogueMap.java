@@ -1,5 +1,6 @@
 package ch.games.roguepg.tools;
 
+import ch.games.roguepg.game.RoguePG;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -7,24 +8,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class RogueMap extends Actor {
-
-    TextureAtlas atlas;
-    public static float TILE_SIZE;
     /* Contains indices of Tile instances according to position in map */
     public static int[][] tileIndices;
+    TextureAtlas atlas;
 
-    public RogueMap(float tileSize, int mapXSize, int mapYSize) {
+    public RogueMap(int mapXSize, int mapYSize) {
         atlas = new TextureAtlas("tiles.atlas");
-        TILE_SIZE = tileSize;
         generateMap(mapXSize, mapYSize);
-    }
-
-    public static float indexToCoord(int index) {
-        return index * TILE_SIZE;
-    }
-
-    public static int coordToIndex(float coord) {
-        return (int) (coord / TILE_SIZE);
     }
 
     @Override
@@ -32,7 +22,12 @@ public class RogueMap extends Actor {
         for (int i = 0; i < RogueMap.tileIndices.length; i++) {
             for (int j = 0; j < RogueMap.tileIndices[0].length; j++) {
                 int current = RogueMap.tileIndices[i][j];
-                batch.draw(atlas.getRegions().get(current), indexToCoord(i), indexToCoord(j), TILE_SIZE, TILE_SIZE);
+                batch.draw(atlas.getRegions().get(current),
+                    i*RoguePG.PPM,
+                    j*RoguePG.PPM,
+                    RoguePG.PPM,
+                    RoguePG.PPM
+                );
             }
         }
     }
