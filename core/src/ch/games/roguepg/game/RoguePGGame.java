@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class RoguePG extends Game {
+public class RoguePGGame extends Game {
 
     public static final String TITLE = "RoguePG";
     public static final int V_WIDTH = 1920;

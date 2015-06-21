@@ -1,6 +1,10 @@
 package ch.games.roguepg.tools;
 
-import ch.games.roguepg.game.RoguePG;
+import java.util.ArrayList;
+import java.util.Random;
+
+import ch.games.roguepg.game.RoguePGGame;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -8,8 +12,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import java.util.ArrayList;
-import java.util.Random;
 
 public class RogueMap extends Actor {
     /* Contains indices of Tile instances according to position in map */
@@ -18,6 +20,11 @@ public class RogueMap extends Actor {
     private final TextureAtlas atlas;
     private final ArrayList<Body> bodies;
 
+    /**
+     * 
+     * @param mapXSize Size in x direction
+     * @param mapYSize Size in y direction
+     */
     public RogueMap(int mapXSize, int mapYSize) {
         atlas = new TextureAtlas("tiles.atlas");
         generateMap(mapXSize, mapYSize);
@@ -28,11 +35,8 @@ public class RogueMap extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         for (Body body : bodies) {
-            batch.draw(
-                atlas.getRegions().first(),
-                (body.getPosition().x - 0.5f) * RoguePG.PPM,
-                (body.getPosition().y - 0.5f) * RoguePG.PPM
-            );
+            batch.draw(atlas.getRegions().first(), (body.getPosition().x - 0.5f) * RoguePGGame.PPM,
+                    (body.getPosition().y - 0.5f) * RoguePGGame.PPM);
         }
     }
 
@@ -46,20 +50,21 @@ public class RogueMap extends Actor {
         Random random = new Random();
 
         /* Rooms */
-        OUTER:
-        for (int tries = 100; tries > 0; tries--) {
+        OUTER: for (int tries = 100; tries > 0; tries--) {
             Room room = new Room(mapXSize, mapYSize);
 
             /*
-             * Check if this room would touch or go over the map boundaries.
-             * If so, skip this iteration.
+             * Check if this room would touch or go over the map boundaries. If so, skip this
+             * iteration.
              */
-            if (room.getX() + room.getWidth() > mapXSize - 2 | room.getY() + room.getHeight() > mapYSize - 2 | room.getX() == 0 | room.getY() == 0) {
+            if (room.getX() + room.getWidth() > mapXSize - 2 || room.getY() + room.getHeight() > mapYSize - 2
+                    || room.getX() == 0 | room.getY() == 0) {
                 continue;
             }
 
             /* Check if this room would overlap another room and skip this iteration if so. */
             // should also check for directly adjacent, but this would cause overflow. Exception?
+            // Maybe there is a more performant method if we check the existing room objects instead
             for (int i = 0; i < room.getWidth(); i++) {
                 for (int j = 0; j < room.getHeight(); j++) {
                     if (tileIndices[room.getX() + i][room.getY() + j] != 0) {
@@ -126,7 +131,7 @@ public class RogueMap extends Actor {
             for (int j = 0; j < RogueMap.tileIndices[0].length; j++) {
                 if (tileIndices[i][j] == 0) {
                     bodyDef.position.set(i + 0.5f, j + 0.5f);
-                    Body body = RoguePG.world.createBody(bodyDef);
+                    Body body = RoguePGGame.world.createBody(bodyDef);
                     body.createFixture(fixtureDef);
                     bodies.add(body);
                 }
