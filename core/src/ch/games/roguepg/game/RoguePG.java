@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+
 public class RoguePG extends Game {
 
     public static final String TITLE = "RoguePG";
@@ -19,8 +20,10 @@ public class RoguePG extends Game {
     public static final float PPM = 64;
     public static final World world = new World(new Vector2(0, 0), true);
 
+
     private RogueMap rogueMap;
-    private Character player;
+    private Player player;
+    private Monster monster, monster1, monster2, monster3;
     private SpriteBatch batch;
     private ScreenViewport viewport;
     private Stage stage;
@@ -28,14 +31,17 @@ public class RoguePG extends Game {
     @Override
     public void create() {
         Box2D.init();
+        Gdx.input.setCursorCatched(true);
         rogueMap = new RogueMap(64, 64);
-        player = new Character();
+        player = new Player();
+        monster = new Monster();
         batch = new SpriteBatch();
         batch.setProjectionMatrix(player.getCamera().combined);
         viewport = new ScreenViewport(player.getCamera());
         stage = new Stage(viewport, batch);
         stage.addActor(rogueMap);
         stage.addActor(player);
+        stage.addActor(monster);
     }
 
     @Override
