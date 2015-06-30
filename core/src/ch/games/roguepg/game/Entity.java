@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import java.util.Random;
 
 public abstract class Entity extends Actor {
+
     public Body body;
     public int speed;
     public Animation animation;
@@ -21,11 +22,10 @@ public abstract class Entity extends Actor {
     public Texture spriteSheet;
     public TextureRegion[] frames;
 
-    public Entity(){
+    public Entity() {
         BodyDef bDef = new BodyDef();
         bDef.type = BodyDef.BodyType.DynamicBody;
         bDef.linearDamping = 10f;
-        bDef.position.set(RogueMap.tileIndices.length / 2, RogueMap.tileIndices[0].length / 2);
         Random rnd = new Random();
         while (RogueMap.tileIndices[(int) bDef.position.x][(int) bDef.position.y] == 0) {
             bDef.position.set(
@@ -41,17 +41,17 @@ public abstract class Entity extends Actor {
         body.createFixture(fDef);
         speed = 50;
     }
-    
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         frameTime += Gdx.graphics.getDeltaTime();
         /*
-        * - 0.5 meters because body's position is in local center, while the draw 
-        * method starts at the bottom left corner.
-        */    
+         * - 0.5 meters because body's position is in local center, while the draw 
+         * method starts at the bottom left corner.
+         */
         batch.draw(
             animation.getKeyFrame(frameTime, true),
-            (body.getPosition().x - 0.5f) * RoguePG.PPM, 
+            (body.getPosition().x - 0.5f) * RoguePG.PPM,
             (body.getPosition().y - 0.5f) * RoguePG.PPM
         );
     }

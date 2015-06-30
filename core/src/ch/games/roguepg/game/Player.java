@@ -8,7 +8,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class Player extends Entity {
+
+public class Player extends Entity{
     private final OrthographicCamera camera;
 
     public Player (){
@@ -37,6 +38,7 @@ public class Player extends Entity {
         /* Make camera follow player */
         camera.position.set(body.getPosition().x * RoguePG.PPM, body.getPosition().y * RoguePG.PPM, 0);
     }
+
     OrthographicCamera getCamera() {
         return camera;
     }
