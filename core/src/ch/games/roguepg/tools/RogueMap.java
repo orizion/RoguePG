@@ -10,19 +10,18 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import java.util.ArrayList;
 import java.util.Random;
+import com.badlogic.gdx.math.Rectangle;
 
 public class RogueMap extends Actor {
     /* Contains indices of Tile instances according to position in map */
-
     public static int[][] tileIndices;
     private final TextureAtlas atlas;
     private final ArrayList<Body> bodies;
 
     public RogueMap(int mapXSize, int mapYSize) {
         atlas = new TextureAtlas("tiles.atlas");
-        generateMap(mapXSize, mapYSize);
         bodies = new ArrayList<Body>();
-        generateMapBodies();
+        generateMap(mapXSize, mapYSize);
     }
 
     @Override
@@ -35,26 +34,30 @@ public class RogueMap extends Actor {
             );
         }
     }
+    private void generateMap(int mapXSize, int mapYSize) {
+        tileIndices = new int[mapXSize][mapYSize];
+        createConnections(createRooms(mapXSize, mapYSize));
+        generateMapBodies();
+    }
 
-    public void generateMap(int mapXSize, int mapYSize) {
+    public ArrayList<Rectangle> createRooms(int mapXSize, int mapYSize) {
         /*
          * All array elements are initially zero, which equates to the standard tile(dirt). Generate
          * the map by setting zeroes to other tile numbers.
          */
-        tileIndices = new int[mapXSize][mapYSize];
-        ArrayList<Room> roomArray = new ArrayList<Room>();
-        Random random = new Random();
 
         /* Rooms */
+        Random random = new Random();
+        ArrayList<Rectangle> roomArray = new ArrayList<Rectangle>();
+
         OUTER:
         for (int tries = 100; tries > 0; tries--) {
-            Room room = new Room(mapXSize, mapYSize);
-
+            Rectangle room = new Rectangle(1 + random.nextInt(mapXSize-1), 1 + random.nextInt(mapYSize-1), random.nextInt(5 - 2) + 2, random.nextInt(5 - 2) + 2);
             /*
              * Check if this room would touch or go over the map boundaries.
              * If so, skip this iteration.
              */
-            if (room.getX() + room.getWidth() > mapXSize - 2 | room.getY() + room.getHeight() > mapYSize - 2 | room.getX() == 0 | room.getY() == 0) {
+            if (room.x + room.width > mapXSize - 2 || room.y + room.height > mapYSize - 2) {
                 continue;
             }
 
@@ -62,7 +65,7 @@ public class RogueMap extends Actor {
             // should also check for directly adjacent, but this would cause overflow. Exception?
             for (int i = 0; i < room.getWidth(); i++) {
                 for (int j = 0; j < room.getHeight(); j++) {
-                    if (tileIndices[room.getX() + i][room.getY() + j] != 0) {
+                    if (tileIndices[((int) room.x + i)][((int) room.y + j)] != 0) {
                         continue OUTER;
                     }
                 }
@@ -71,21 +74,26 @@ public class RogueMap extends Actor {
             /* Modify tileIndices */
             for (int i = 0; i < room.getWidth(); i++) {
                 for (int j = 0; j < room.getHeight(); j++) {
-                    tileIndices[room.getX() + i][room.getY() + j] = 1;
+                    tileIndices[((int) room.x + i)][((int) room.y + j)] = 1;
                 }
             }
             roomArray.add(room);
         }
+        return roomArray;
+    }
+    public void createConnections(ArrayList<Rectangle> roomArray){
         /* Connections */
-
+        Random random = new Random();
         for (int i = 0; i < 10; i++) {
+            
             // from + rndGenerator.nextInt(to - from + 1)
-            int startRoom = 0 + random.nextInt((roomArray.size() - 1) - 0);
-            int endRoom = 0 + random.nextInt((roomArray.size() - 1) - 0);
-            int startX = roomArray.get(startRoom).getX() + random.nextInt(roomArray.get(startRoom).getWidth() + 1);
-            int startY = roomArray.get(startRoom).getY() + random.nextInt(roomArray.get(startRoom).getHeight() + 1);
-            int endX = roomArray.get(endRoom).getX() + random.nextInt(roomArray.get(endRoom).getWidth() + 1);
-            int endY = roomArray.get(endRoom).getY() + random.nextInt(roomArray.get(endRoom).getHeight() + 1);
+            Rectangle startRoom = roomArray.get(random.nextInt(roomArray.size() - 1));
+            Rectangle endRoom = roomArray.get(random.nextInt(roomArray.size() - 1));
+
+            int startX = (int) (startRoom.width / 2 + startRoom.x);
+            int startY = (int) (startRoom.height / 2 + startRoom.y);
+            int endX = (int) (endRoom.width / 2 + endRoom.x);
+            int endY = (int) (endRoom.height / 2 + endRoom.y);
             // Randomly choose between x and y axis, 50:50 chance
             boolean moveInX = (random.nextDouble() >= 0.5f);
 
