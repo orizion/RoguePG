@@ -5,12 +5,11 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import java.util.ArrayList;
 import java.util.Random;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.ChainShape;
 
 public class RogueMap extends Actor {
     /* Contains indices of Tile instances according to position in map */
@@ -28,9 +27,9 @@ public class RogueMap extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         for (Body body : bodies) {
             batch.draw(
-                atlas.getRegions().first(),
-                (body.getPosition().x - 0.5f) * RoguePG.PPM,
-                (body.getPosition().y - 0.5f) * RoguePG.PPM
+                atlas.findRegion("dirt"),
+                body.getPosition().x * RoguePG.PPM,
+                body.getPosition().y * RoguePG.PPM
             );
         }
     }
@@ -125,17 +124,17 @@ public class RogueMap extends Actor {
     private void generateMapBodies() {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox((0.5f), (0.5f));
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
+        ChainShape shape = new ChainShape();
+        /* Set vertices of the box in counter-clockwise order. */
+        float[] vertices = {0, 0, 1, 0, 1, 1, 0, 1};
+        shape.createLoop(vertices);
 
         for (int i = 0; i < RogueMap.tileIndices.length; i++) {
             for (int j = 0; j < RogueMap.tileIndices[0].length; j++) {
                 if (tileIndices[i][j] == 0) {
                     bodyDef.position.set(i + 0.5f, j + 0.5f);
                     Body body = RoguePG.world.createBody(bodyDef);
-                    body.createFixture(fixtureDef);
+                    body.createFixture(shape, 1);
                     bodies.add(body);
                 }
             }
