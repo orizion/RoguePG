@@ -24,7 +24,7 @@ public class RoguePG extends Game {
 
     private RogueMap rogueMap;
     private Player player;
-    private Monster monster, monster1, monster2;
+    private Monster monster, monster1, monster2, monster3;
     private SpriteBatch batch;
     private ScreenViewport viewport;
     private Stage stage;
@@ -35,12 +35,13 @@ public class RoguePG extends Game {
         Gdx.input.setCursorCatched(true);
         rogueMap = new RogueMap(32, 32);
         player = new Player();
-        //Monster seeks monster1, monster1 flees and monster2 just wanders around
         monster = new Monster();
         monster1 = new Monster();
         monster2 = new Monster();
-        monster.setSteeringBehavior(new Seek(monster, monster1));
-        monster1.setSteeringBehavior(new Flee(monster1, monster));
+        monster3 = new Monster();
+        monster.getSteeringAgent().setSteeringBehavior(new Seek(monster.getSteeringAgent(), monster1.getSteeringAgent()));
+        monster1.getSteeringAgent().setSteeringBehavior(new Flee(monster1.getSteeringAgent(), monster.getSteeringAgent()));
+        monster3.getSteeringAgent().setSteeringBehavior(new Seek(monster3.getSteeringAgent(), player.getSteeringAgent()));
         batch = new SpriteBatch();
         batch.setProjectionMatrix(player.getCamera().combined);
         viewport = new ScreenViewport(player.getCamera());
@@ -50,11 +51,12 @@ public class RoguePG extends Game {
         stage.addActor(monster);
         stage.addActor(monster1);
         stage.addActor(monster2);
+        stage.addActor(monster3);
     }
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0, 0.5f, 0, 1);
+        Gdx.gl.glClearColor(0.141f, 0.182f, 0.205f, 1);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
         world.step(1 / 60f, 6, 2);
         stage.act(Gdx.graphics.getDeltaTime());

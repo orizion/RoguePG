@@ -27,7 +27,7 @@ public class RogueMap extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         for (Body body : bodies) {
             batch.draw(
-                atlas.findRegion("dirt"),
+                atlas.findRegion("stone"),
                 body.getPosition().x * RoguePG.PPM,
                 body.getPosition().y * RoguePG.PPM
             );
@@ -81,6 +81,9 @@ public class RogueMap extends Actor {
         return roomArray;
     }
     public void createConnections(ArrayList<Rectangle> roomArray){
+        if(tileIndices[0][0] == Tile.STONE.ordinal()){
+            return;
+        }
         /* Connections */
         Random random = new Random();
         for (int i = 0; i < 10; i++) {

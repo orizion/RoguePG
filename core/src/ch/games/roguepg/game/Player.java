@@ -1,5 +1,6 @@
 package ch.games.roguepg.game;
 
+import ch.games.roguepg.tools.SteeringAgent;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -11,12 +12,15 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Player extends Entity{
     private final OrthographicCamera camera;
+    private final SteeringAgent steeringAgent;
 
     public Player (){
         camera = new OrthographicCamera(RoguePG.V_WIDTH, RoguePG.V_HEIGHT);
         spriteSheet = new Texture("player.gif");
         frames = TextureRegion.split(spriteSheet, 64, 64)[0];
         animation = new Animation(0.25f, frames);
+        speed = 50;
+        steeringAgent = new SteeringAgent(body);
     }
     
     @Override
@@ -41,5 +45,9 @@ public class Player extends Entity{
 
     OrthographicCamera getCamera() {
         return camera;
+    }
+    
+    public SteeringAgent getSteeringAgent() {
+        return steeringAgent;
     }
 }
