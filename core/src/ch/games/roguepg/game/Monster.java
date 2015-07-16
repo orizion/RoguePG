@@ -25,12 +25,14 @@ public class Monster extends Entity {
         stateMachine = new DefaultStateMachine(this, MonsterState.NONE);
         MessageManager.getInstance().addListener(stateMachine, 1);
         stateMachine.changeState(MonsterState.PATROL);
+        
     }
     
     @Override
     public void act(float delta) {
         stateMachine.update();
         SteeringAcceleration<Vector2> steeringOutput = new SteeringAcceleration<Vector2>(new Vector2());
+        /* Set steeringBehavior to null to make the Monster stand still */
         if (steeringAgent.getSteeringBehavior() != null) {
             // Calculate steering acceleration
             steeringAgent.getSteeringBehavior().calculateSteering(steeringOutput);
@@ -39,6 +41,8 @@ public class Monster extends Entity {
             
             // Apply steering acceleration to move this agent
             steeringAgent.applySteering(steeringOutput, delta);
+            
+            animation = new Animation(0.25f, TextureRegion.split(spriteSheet, 64, 64)[determineAnimation(body.getLinearVelocity())]);
         }
     }
 
