@@ -1,13 +1,8 @@
 package ch.games.roguepg.tools;
 
-import static ch.games.roguepg.game.RoguePG.world;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
-import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
-import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance;
-import com.badlogic.gdx.ai.steer.behaviors.Wander;
-import com.badlogic.gdx.ai.steer.utils.rays.CentralRayWithWhiskersConfiguration;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
@@ -20,19 +15,10 @@ public class SteeringAgent implements Steerable<Vector2> {
 
     public SteeringAgent(Body body) {
         this.body = body;
-        //Default steering. Change with setSteeringBehavior
-        RaycastObstacleAvoidance raycastObstacleAvoidanceSB = new RaycastObstacleAvoidance(this)
-            .setRayConfiguration(new CentralRayWithWhiskersConfiguration(this, 100f, 40f, (float) Math.toRadians(35)))
-            .setRaycastCollisionDetector(new Box2dRaycastCollisionDetector(world));
-
-        Wander wanderSB = new Wander<Vector2>(this)
-            .setWanderOffset(0.1f)
-            .setWanderRadius(0.1f)
-            .setWanderRate(0.1f);
-
-        steeringBehavior = new PrioritySteering<Vector2>(this, 0.0001f)
-            .add(raycastObstacleAvoidanceSB)
-            .add(wanderSB);
+        
+        /* This is handled by MonsterState after creation. */
+        steeringBehavior = null;
+  
     }
 
     public void applySteering(SteeringAcceleration<Vector2> steering, float delta) {

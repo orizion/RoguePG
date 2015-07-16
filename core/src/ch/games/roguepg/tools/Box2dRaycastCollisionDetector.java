@@ -1,5 +1,7 @@
 package ch.games.roguepg.tools;
 
+import ch.games.roguepg.game.Monster;
+import com.badlogic.gdx.ai.msg.MessageManager;
 import com.badlogic.gdx.ai.utils.Collision;
 import com.badlogic.gdx.ai.utils.Ray;
 import com.badlogic.gdx.ai.utils.RaycastCollisionDetector;
@@ -10,12 +12,13 @@ import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class Box2dRaycastCollisionDetector implements RaycastCollisionDetector<Vector2> {
-
+    
     World world;
     Box2dRaycastCallback callback;
-
-    public Box2dRaycastCollisionDetector(World world) {
-        this(world, new Box2dRaycastCallback());
+    Monster owner;
+  
+    public Box2dRaycastCollisionDetector(World world, Monster owner) {
+        this(world, new Box2dRaycastCallback(owner));
     }
 
     public Box2dRaycastCollisionDetector(World world, Box2dRaycastCallback callback) {
@@ -42,14 +45,21 @@ public class Box2dRaycastCollisionDetector implements RaycastCollisionDetector<V
 
         public Collision<Vector2> outputCollision;
         public boolean collided;
+        private final Monster owner;
 
-        public Box2dRaycastCallback() {
+        public Box2dRaycastCallback(Monster owner) {
+            this.owner = owner;
         }
 
         @Override
         public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
             if (outputCollision != null) {
                 outputCollision.set(point, normal);
+            }
+            if (fixture.getBody().getUserData() == "player") {
+                /* Send a message (int 1) to the owner. */
+                //Later have an enum defining different messages.
+                MessageManager.getInstance().dispatchMessage(null, owner.getStateMachine(), 1);
             }
             collided = true;
             return fraction;

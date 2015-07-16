@@ -21,6 +21,7 @@ public class Player extends Entity{
         animation = new Animation(0.25f, frames);
         speed = 50;
         steeringAgent = new SteeringAgent(body);
+        body.setUserData("player");
     }
     
     @Override
